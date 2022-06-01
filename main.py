@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import render_template
 from flask_sqlalchemy import SQLAlchemy
+from forms import RegistrationForm
 import os
 from dotenv import load_dotenv
 
@@ -20,10 +21,11 @@ class Table(db.Model):
 
 # db.create_all()
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def hello_world():
-    return render_template("index.html")
+    registration_form = RegistrationForm()
 
+    return render_template("index.html", form=registration_form)
 
 if __name__ == '__main__':
     app.run(debug=True)
