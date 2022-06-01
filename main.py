@@ -11,12 +11,15 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 # connect to database
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', "sqlite:///blog.db")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', "sqlite:///db.db")
 db = SQLAlchemy(app)
 
 
-class Table(db.Model):
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    location = db.Column(db.String(120), nullable=False)
+    time = db.Column(db.DateTime, nullable=False)
 
 
 # db.create_all()
