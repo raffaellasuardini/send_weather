@@ -1,3 +1,5 @@
+{% from "_formhelpers.html" import render_field %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,22 +15,28 @@
 <div class="row d-flex justify-content-center">
     <div class="col-md-5 mt-5">
     <h2 class="text-center">️☀️🌦 Send me the weather❄️☔️</h2>
+        <!--    flash messages    -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert {{ category }}" role="alert"> {{ message|capitalize }} </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <!--    end flash    -->
 
       <form method="POST" action="{{url_for('hello_world')}}" novalidate>
           {{form.csrf_token}}
         <div class="form-floating mb-3">
-            {{ form.email(class_='form-control', placeholder='name@email.com')}}
-            {{ form.email.label}}
+            {{ render_field(form.email, class_='form-control', placeholder='email') }}
         </div>
 
       <div class="form-floating mb-3">
-          {{ form.location(class_='form-control', placeholder='location')}}
-          {{ form.location.label }}
+          {{ render_field(form.location, class_='form-control', placeholder='location') }}
       </div>
 
        <div class="form-floating mb-3">
-          {{ form.time(class_='form-control', placeholder='time') }}
-           {{ form.time.label }}
+          {{ render_field(form.time, class_='form-control', placeholder='time') }}
        </div>
 
           {{ form.submit(class_="btn btn-primary" )}}

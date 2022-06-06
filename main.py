@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import render_template
+from flask import render_template, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from forms import RegistrationForm
 import os
@@ -26,9 +26,22 @@ class User(db.Model):
 
 @app.route("/", methods=["GET", "POST"])
 def hello_world():
-    registration_form = RegistrationForm()
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        location = form.location.data
+        time = form.time.data
+        #user = User.query.filter_by(email=email).first()
+        # email already in the database
+        if user:
+            flash("Questa email riceve già il meteo", 'alert-secondary')
+            return redirect(url_for('hello_world'))
 
-    return render_template("index.html", form=registration_form)
+        flash("Perfetto, riceverai il meteo all'ora indicata", 'alert-success')
+        return redirect(url_for('hello_world'))
+
+    return render_template("index.html", form=form)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
