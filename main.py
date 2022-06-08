@@ -19,13 +19,15 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     location = db.Column(db.String(120), nullable=False)
-    time = db.Column(db.DateTime, nullable=False)
+    coord = db.Column(db.String(120), nullable=False)
+    time = db.Column(db.String(5), nullable=False)
 
 
 # db.create_all()
 
 @app.route("/", methods=["GET", "POST"])
 def hello_world():
+    api_key = os.getenv('GOOGLE_KEY')
     form = RegistrationForm()
     if form.validate_on_submit():
         email = form.email.data
@@ -40,7 +42,7 @@ def hello_world():
         flash("Perfetto, riceverai il meteo all'ora indicata", 'alert-success')
         return redirect(url_for('hello_world'))
 
-    return render_template("index.html", form=form)
+    return render_template("index.html", form=form, key= api_key)
 
 
 if __name__ == '__main__':
