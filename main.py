@@ -20,7 +20,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     location = db.Column(db.String(120), nullable=False)
     coord = db.Column(db.String(120), nullable=False)
-    time = db.Column(db.String(5), nullable=False)
+
 
 
 # db.create_all()
@@ -31,18 +31,23 @@ def hello_world():
     form = RegistrationForm()
     if form.validate_on_submit():
         email = form.email.data
-        location = form.location.data
-        time = form.time.data
-        #user = User.query.filter_by(email=email).first()
+        position = f'{form.lat.data} {form.lng.data}'
+        already_user = User.query.filter_by(email=email).first()
         # email already in the database
-        if user:
+        if position == ' ':
+            flash("Attenzione: seleziona una città", 'alert-secondary')
+            return redirect(url_for('hello_world'))
+        if already_user:
             flash("Questa email riceve già il meteo", 'alert-secondary')
             return redirect(url_for('hello_world'))
+        else:
+            user = User(email=form.email.data, location=form.location.data, coord=position)
+            db.session.add(user)
+            db.session.commit()
+            flash(f"Perfetto, ogni giorno riceverai il meteo di {form.location.data}", 'alert-success')
+            return redirect(url_for('hello_world'))
 
-        flash("Perfetto, riceverai il meteo all'ora indicata", 'alert-success')
-        return redirect(url_for('hello_world'))
-
-    return render_template("index.html", form=form, key= api_key)
+    return render_template("index.html", form=form, key=api_key)
 
 
 if __name__ == '__main__':

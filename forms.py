@@ -10,5 +10,4 @@ class RegistrationForm(FlaskForm):
     location = StringField('Inserisci la città', validators=[DataRequired('Inserisci una location')])
     lat = HiddenField()
     lng = HiddenField()
-    time = TimeField('Mandami il meteo ogni giorno alle: ', format='%H:%M', validators=[DataRequired('Inserisci un orario')])
     submit = SubmitField('Invia')
