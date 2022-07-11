@@ -1,7 +1,10 @@
 from flask import Flask
 from flask import render_template, flash, redirect, url_for
+import logging
 from flask_sqlalchemy import SQLAlchemy
 from forms import RegistrationForm
+from sender import Mail
+from api import Weather
 import os
 from dotenv import load_dotenv
 
