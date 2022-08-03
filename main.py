@@ -2,7 +2,7 @@ from flask import Flask
 from flask import render_template, flash, redirect, url_for
 import logging
 from flask_sqlalchemy import SQLAlchemy
-from forms import RegistrationForm
+from forms import RegistrationForm, UnsusbscribeForm, ChangeCityForm
 from sender import Mail
 from api import Weather
 import os
@@ -24,9 +24,6 @@ class User(db.Model):
     location = db.Column(db.String(120), nullable=False)
     coord = db.Column(db.String(120), nullable=False)
 
-
-
-# db.create_all()
 
 @app.route("/", methods=["GET", "POST"])
 def hello_world():
@@ -53,5 +50,38 @@ def hello_world():
     return render_template("index.html", form=form, key=api_key)
 
 
+@app.route("/unsubscribe", methods=["GET", "POST"])
+def unsubscribe():
+    form = UnsusbscribeForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        user = User.query.filter_by(email=email).first()
+        if user:
+            user_to_delete = User.query.get(user.id)
+            db.session.delete(user_to_delete)
+            db.session.commit()
+            flash("Cancellazione avvenuta con successo. Ci mancherai 🌈", 'alert-secondary')
+        else:
+            flash(f"L'indirizzo {form.email.data} non è stato registrato", 'alert-secondary')
+            return render_template('', form=form)
+    return render_template('', form=form)
+
+
+@app.route("/change", methods=["GET", "POST"])
+def change():
+    form = ChangeCityForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        user = User.query.filter_by(email=email).first()
+        if user:
+            user.location = form.location.data
+            user.coord = f'{form.lat.data} {form.lng.data}'
+            db.session.commit()
+            flash(f"Riceverai il meteo per: {form.location.data}", 'alert-success')
+        else:
+            flash(f"L'indirizzo {form.email.data} non è stato registrato", 'alert-secondary')
+
+
 if __name__ == '__main__':
+    db.create_all()
     app.run(debug=True)

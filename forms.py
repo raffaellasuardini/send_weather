@@ -11,3 +11,16 @@ class RegistrationForm(FlaskForm):
     lat = HiddenField()
     lng = HiddenField()
     submit = SubmitField('Invia')
+
+class UnsusbscribeForm(FlaskForm):
+    email = StringField('Inserisci la email di registrazione',
+                        validators=[DataRequired('Inserisci una email'), Email('Email non valida')])
+    submit = SubmitField('Invia')
+
+class ChangeCityForm(FlaskForm):
+    email = StringField('Inserisci la email di registrazione',
+                        validators=[DataRequired('Inserisci una email'), Email('Email non valida')])
+    location = StringField('Inserisci una nuova città', validators=[DataRequired('Inserisci una location')])
+    lat = HiddenField()
+    lng = HiddenField()
+    submit = SubmitField('Invia')

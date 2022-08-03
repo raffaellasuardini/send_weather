@@ -1,4 +1,5 @@
 {% macro render_field(field) %}
+<!-- every field follow those following rules, it's an easy way to add class in case of errors-->
   {{ field(**kwargs)|safe }}
   {{ field.label }}
   {% if field.errors %}
