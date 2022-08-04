@@ -61,7 +61,7 @@ def unsubscribe():
             db.session.delete(user_to_delete)
             db.session.commit()
             flash("Cancellazione avvenuta con successo. Ci mancherai 🌈", 'alert-success')
-            return render_template('unsubscribe.html', form=form)
+            return redirect('unsubscribe')
         else:
             flash(f"L'indirizzo {form.email.data} non è stato registrato", 'alert-danger')
             return render_template('unsubscribe.html', form=form)
