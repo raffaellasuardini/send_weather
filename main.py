@@ -60,15 +60,17 @@ def unsubscribe():
             user_to_delete = User.query.get(user.id)
             db.session.delete(user_to_delete)
             db.session.commit()
-            flash("Cancellazione avvenuta con successo. Ci mancherai 🌈", 'alert-secondary')
+            flash("Cancellazione avvenuta con successo. Ci mancherai 🌈", 'alert-success')
+            return render_template('unsubscribe.html', form=form)
         else:
-            flash(f"L'indirizzo {form.email.data} non è stato registrato", 'alert-secondary')
-            return render_template('', form=form)
-    return render_template('', form=form)
+            flash(f"L'indirizzo {form.email.data} non è stato registrato", 'alert-danger')
+            return render_template('unsubscribe.html', form=form)
+    return render_template('unsubscribe.html', form=form)
 
 
 @app.route("/change", methods=["GET", "POST"])
 def change():
+    api_key = os.getenv('GOOGLE_KEY')
     form = ChangeCityForm()
     if form.validate_on_submit():
         email = form.email.data
@@ -78,8 +80,11 @@ def change():
             user.coord = f'{form.lat.data} {form.lng.data}'
             db.session.commit()
             flash(f"Riceverai il meteo per: {form.location.data}", 'alert-success')
+            return render_template('change.html', form=form)
         else:
-            flash(f"L'indirizzo {form.email.data} non è stato registrato", 'alert-secondary')
+            flash(f"L'indirizzo {form.email.data} non è stato registrato", 'alert-danger')
+            return render_template('change.html', form=form)
+    return render_template('change.html', form=form, key=api_key)
 
 
 if __name__ == '__main__':
